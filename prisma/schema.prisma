@@ -56,6 +56,7 @@ model User {
   updatedAt         DateTime           @updatedAt
 
   profile           EmployeeProfile?
+  chatThread        ChatThread?
   leaveRequests     LeaveRequest[]     @relation("LeaveRequests")
   approvedLeaves    LeaveRequest[]     @relation("ApprovedLeaves")
   leaveBalance      LeaveBalance?
@@ -148,4 +149,15 @@ model DocumentRequest {
   @@map("document_requests")
 }
 
+model ChatThread {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  threadId   String   @unique
+  lastUsedAt DateTime @updatedAt
+  isActive   Boolean  @default(true)
+
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("chat_threads")
+}
 
