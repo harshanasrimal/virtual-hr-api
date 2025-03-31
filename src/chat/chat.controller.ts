@@ -18,7 +18,7 @@ import {
   
     @Post('message')
     async sendMessage(@Body() dto: MessageDto, @Req() req: Request) {
-      const user = req.user as { id: string }; // JWT payload contains userId as `sub`
+      const user = req.user as { id: string };
       try {
         const response = await this.chatService.handleMessage(dto.message, user.id);
         return { success: true, message: response };

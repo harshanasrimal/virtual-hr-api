@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { EmployeeModule } from './employee/employee.module';
+import { LeaveModule } from './leave/leave.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { EmployeeModule } from './employee/employee.module';
     AuthModule,
     ChatModule,
     EmployeeModule,
+    LeaveModule,
   ],
   controllers: [AppController],
   providers: [AppService],
