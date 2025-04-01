@@ -54,8 +54,44 @@ export class LeaveService {
     return leave;
   }
 
-  findAll() {
-    return `This action returns all leave`;
+  async getBalance(userId: string) {
+    let balance = await this.prisma.leaveBalance.findUnique({
+      where: { userId },
+    });
+
+    if (!balance) {
+      balance = await this.prisma.leaveBalance.create({
+        data: {
+          userId,
+          annual: 14,
+          casual: 7,
+          medical: 5,
+        },
+      });
+    }
+
+    return balance;
+  }
+
+  async findAll() {
+    const leaves = await this.prisma.leaveRequest.findMany({
+      include: {
+        user: {
+          select: {
+            email: true,
+            image: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+          },
+        },
+      },
+    }
+    });
+
+    return leaves;
   }
 
   findOne(id: number) {

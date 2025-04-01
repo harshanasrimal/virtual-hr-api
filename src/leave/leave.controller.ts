@@ -19,8 +19,15 @@ export class LeaveController {
     return this.leaveService.create(createLeaveDto, user.id);
   }
 
+  @Roles('EMPLOYEE')
+  @Get('balance')
+  getLeaveBalance(@Req() req: Request) {
+    const user = req.user as { id: string };
+    return this.leaveService.getBalance(user.id);
+  }
+
   @Roles('HR')
-  @Get()
+  @Get("all")
   findAll() {
     return this.leaveService.findAll();
   }
