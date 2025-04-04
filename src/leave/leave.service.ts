@@ -73,26 +73,45 @@ export class LeaveService {
     return balance;
   }
 
-  async findAll() {
-    const leaves = await this.prisma.leaveRequest.findMany({
-      include: {
-        user: {
-          select: {
-            email: true,
-            image: true,
-            profile: {
-              select: {
-                firstName: true,
-                lastName: true,
+  async findAll(user: { id: string; role: string }) {
+    let leaves;
+  
+    if (user.role !== 'HR') {
+      // Non-HR: only their own leaves
+      leaves = await this.prisma.leaveRequest.findMany({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        }
+      });
+    } else {
+      // HR: see all
+      leaves = await this.prisma.leaveRequest.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              email: true,
+              image: true,
+              profile: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
               },
+            },
           },
         },
-      },
+      });
     }
-    });
-
+  
     return leaves;
   }
+  
 
   findOne(id: number) {
     return `This action returns a #${id} leave`;

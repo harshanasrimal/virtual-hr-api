@@ -50,7 +50,7 @@ model User {
   email             String             @unique
   password          String
   role              Role
-  image             String             @default("/images/user.jpg")
+  image             String             @default("https://hr.harshanasrimal.com/images/user.jpg")
   phone             String?            // Optional contact number
   isActive          Boolean            @default(true)
   createdAt         DateTime           @default(now())

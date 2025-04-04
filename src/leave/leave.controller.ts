@@ -26,10 +26,10 @@ export class LeaveController {
     return this.leaveService.getBalance(user.id);
   }
 
-  @Roles('HR')
   @Get("all")
-  findAll() {
-    return this.leaveService.findAll();
+  findAll(@Req() req: Request) {
+    const user = req.user as { id: string, role: string };
+    return this.leaveService.findAll(user);
   }
 
   @Get(':id')
