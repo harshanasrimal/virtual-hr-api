@@ -1,1 +1,1 @@
-scp -i ../virtual-hr.pem -r dist prisma package*.json ubuntu@54.254.177.26:/home/ubuntu/hr-backend
+scp -i ../virtual-hr.pem -r dist prisma package*.json ubuntu@13.229.42.58:/home/ubuntu/hr-backend
