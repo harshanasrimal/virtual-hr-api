@@ -26,7 +26,12 @@ async function bootstrap() {
       transform: true, // Automatically transform payloads to DTO instances
     }),
   );
-  
+  app.enableCors({
+    origin: ['https://hr.harshanasrimal.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
