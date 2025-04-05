@@ -266,7 +266,7 @@ export class LeaveService {
     }));
     
     for (const row of results) {
-      monthly[row.month - 1].count = Number(row.count);
+      monthly[Number(row.month) - 1].count = Number(row.count);
     }
   
     return {data: monthly};
