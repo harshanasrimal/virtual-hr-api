@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { EmployeeModule } from './employee/employee.module';
 import { LeaveModule } from './leave/leave.module';
+import { DocumentModule } from './document/document.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { LeaveModule } from './leave/leave.module';
     ChatModule,
     EmployeeModule,
     LeaveModule,
+    DocumentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
