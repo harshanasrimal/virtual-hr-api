@@ -65,15 +65,49 @@ export class EmployeeService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} employee`;
+  async findOne(id: string) {
+    const employee = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        profile: true,
+      },
+    });
+    if (!employee) throw new BadRequestException('User not found');
+    return employee;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+  async update(id: string, dto: UpdateEmployeeDto) {
+    const { email, phone, ...profileData } = dto;
+  
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        ...(email && { email }),
+        ...(phone && { phone }),
+        profile: {
+          update: {
+            ...Object.fromEntries(
+              Object.entries(profileData).filter(([_, v]) => v !== undefined)
+            ),
+            ...(dto.joinedDate && { joinedDate: new Date(dto.joinedDate) }),
+          },
+        },
+      },
+      include: {
+        profile: true,
+      },
+    });
   }
 
-  remove(id: number) {
+  async updateProfilePicture(userId: string, imagePath: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { image: imagePath },
+    });
+  }
+  
+
+  remove(id: string) {
     return `This action removes a #${id} employee`;
   }
 }
