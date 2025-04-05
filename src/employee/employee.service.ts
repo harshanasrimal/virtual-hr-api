@@ -4,10 +4,11 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from 'src/core/services';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { EmailService } from 'src/core/services/email.service';
 
 @Injectable()
 export class EmployeeService {
-  constructor(private prisma:PrismaService) {}
+  constructor(private prisma:PrismaService, private emailService:EmailService) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
     const exists = await this.prisma.user.findUnique({
@@ -46,12 +47,18 @@ export class EmployeeService {
   });
 
   // Send email with password
-  // await this.mailService.sendMail({
-  //   to: createEmployeeDto.email,
-  //   subject: 'Welcome to the system',
-  //   text: `Your password is ${password}`,
-  // });
-
+  await this.emailService.sendMail(
+    createEmployeeDto.email,
+    'Welcome to the HR Portal',
+    `
+      <p>Hi ${createEmployeeDto.firstName},</p>
+      <p>Your account has been successfully created.</p>
+      <p><strong>Temporary Password:</strong> ${password}</p>
+      <p style="color: #d9534f;"><strong>Please change your password after logging in for the first time.</strong></p>
+      <p>Thank you,<br/>HR Team</p>
+    `,
+  );
+  
 
   const { password: _, ...userWithoutPassword } = created;
   return userWithoutPassword;

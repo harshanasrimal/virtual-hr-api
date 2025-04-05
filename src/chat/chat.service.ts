@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/core/services/prisma.service';
 import OpenAI from 'openai';
 import { LeaveService } from 'src/leave/leave.service';
+import { DocumentService } from 'src/document/document.service';
 
 @Injectable()
 export class ChatService {
@@ -9,7 +10,7 @@ export class ChatService {
   private assistantId: string;
   private readonly logger = new Logger(ChatService.name);
 
-  constructor(private prisma: PrismaService, private leaveService: LeaveService) {
+  constructor(private prisma: PrismaService, private leaveService: LeaveService,private documentService: DocumentService) {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
@@ -116,6 +117,7 @@ export class ChatService {
           const args = JSON.parse(argsString);
           let mockResult = '';
           let toolResult = '';
+          let result;
           switch (name) {
             case 'request_leave':
               // Call the leave service to handle the request
@@ -125,7 +127,7 @@ export class ChatService {
                 toDate: args.toDate,
                 reason: args.reason,
               };
-              const result = await this.leaveService.create(leaveRequest,userId);
+              result = await this.leaveService.create(leaveRequest,userId);
               toolResult = JSON.stringify(result, null, 2);
               break;
             case 'leave_balance':
@@ -137,9 +139,10 @@ export class ChatService {
               // Handle document request
               const documentRequest = {
                 type: args.documentType,
-                userId,
+                reason: args.reason,
               };
-              toolResult = `Document request for ${args.documentType} submitted.`;
+              result = await this.documentService.create(documentRequest, userId);
+              toolResult = JSON.stringify(result, null, 2);
               break;
             case 'end_chat':
               // End chat
